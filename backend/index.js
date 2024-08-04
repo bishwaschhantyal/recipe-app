@@ -6,9 +6,11 @@ const userRouter = require("./routes/user.route");
 const cookieParser = require("cookie-parser")
 const app = express();
 
-const PORT = 1001;
+require("dotenv").config({path: ".env"})
 
-connectMongoDB("mongodb://127.0.0.1:27017/recipe_app")
+const PORT = process.env.PORT || 1001;
+
+connectMongoDB(process.env.MONGO_CONNECTION_URL)
   .then(() => console.log("MongoDB connected successfully"))
   .catch((err) => console.log("Error while connecting mongoDB :", err));
 
