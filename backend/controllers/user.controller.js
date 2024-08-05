@@ -30,8 +30,8 @@ const userLogin = async (req, res) => {
     }
 
     const token = setUser(user)
-    res.cookie("uid", token)
-    return res.status(200).json({ msg: "successfully login", user: email });
+    // res.cookie("uid", token)
+    return res.status(200).json({ msg: "successfully login", user: email, token: token });
   } catch (error) {
     console.error("Error while login to page :", error);
   }

@@ -1,17 +1,19 @@
 const { getUser } = require("../services/userAuth.service");
 
-const isUserLoggedIn = (req, res, next) =>{
-    const token = req.cookies.uid;
-    console.log(token)
-    const user = getUser(token)
-    if(!user) return res.status(401).json({msg: "you are not logged in"});
+const isUserLoggedIn = async(req, res, next) => {
+  // const token = req.cookies.uid;
+  const headerVal = req.headers["authorization"];
+  console.log(req.headers);
 
-    console.log(user);
+  const token = headerVal.substring(7);
 
-    req.user = user;
-    next();
-}
+  const user = getUser(token);
+  if (!user) return res.status(400).json({ msg: "you are not logged in" });
+
+  req.user = user;
+  next();
+};
 
 module.exports = {
-    isUserLoggedIn
-}
+  isUserLoggedIn,
+};
