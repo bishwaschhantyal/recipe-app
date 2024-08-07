@@ -11,7 +11,7 @@ require("dotenv").config({path: ".env"})
 const PORT = process.env.PORT || 1001;
 
 connectMongoDB(process.env.MONGO_CONNECTION_URL)
-  .then(() => console.log("MongoDB connected successfully"))
+  .then(() => console.log("MongoDB successfully connected"))
   .catch((err) => console.log("Error while connecting mongoDB :", err));
 
 app.use(express.json());

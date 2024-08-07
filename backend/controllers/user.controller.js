@@ -1,5 +1,6 @@
 const User = require("../models/user.model");
 const { setUser } = require("../services/userAuth.service");
+const bcrypt = require("bcrypt");
 
 const userSignUp = async (req, res) => {
   try {
@@ -24,14 +25,20 @@ const userSignUp = async (req, res) => {
 const userLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email, password });
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ msg: "User Not found" });
     }
 
-    const token = setUser(user)
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      return res.status(404).json({ msg: "password doesn't match" });
+    }
+    const token = setUser(user);
     // res.cookie("uid", token)
-    return res.status(200).json({ msg: "successfully login", user: email, token: token });
+    return res
+      .status(200)
+      .json({ msg: "successfully login", user: email, token: token });
   } catch (error) {
     console.error("Error while login to page :", error);
   }
@@ -42,24 +49,28 @@ const updateUser = async (req, res) => {
     const userId = req.params.id;
     const updates = req.body;
     const userUpdates = await User.findByIdAndUpdate(userId, { $set: updates });
-    return res.status(200).json({msg: "updated successfully", Updated: userUpdates})
+    return res
+      .status(200)
+      .json({ msg: "updated successfully", Updated: userUpdates });
   } catch (error) {
     console.error("Error while updating user :", error);
   }
 };
 
-const deleteUser = async (req, res) =>{
+const deleteUser = async (req, res) => {
   try {
     const userId = req.params.id;
     const userDelete = await User.findByIdAndDelete(userId);
-    return res.status(200).json({msg: "deleted successfully", deleted: userDelete})
+    return res
+      .status(200)
+      .json({ msg: "deleted successfully", deleted: userDelete });
   } catch (error) {
     console.error("Error while deleting user :", error);
   }
-}
+};
 module.exports = {
   userSignUp,
   userLogin,
   updateUser,
-  deleteUser
+  deleteUser,
 };

@@ -3,7 +3,12 @@ const { getUser } = require("../services/userAuth.service");
 const isUserLoggedIn = async(req, res, next) => {
   // const token = req.cookies.uid;
   const headerVal = req.headers["authorization"];
-  console.log(req.headers);
+  if (!headerVal) {
+    return res.status(400).json({
+      success: false,
+      message: "Token not provided",
+    });
+  }
 
   const token = headerVal.substring(7);
 
